@@ -1,35 +1,38 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using MvcMusicStore.Models;
 
 namespace MvcMusicStore.Controllers
 {
     public class StoreController : Controller
     {
-        // GET: Store
-        public string Index()
+        public ActionResult Index()
         {
-            return "Hello from Store.Index()";
+            var albums = GetAlbums();
+
+            return View(albums);
         }
 
-        public string Browse(string genre)
+        [Authorize]
+        public ActionResult Buy(int id)
         {
-            string message = HttpUtility.HtmlEncode("Store.Browse,Genre="+genre);
-            return message;
+            var album = GetAlbums().Single(a => a.AlbumId == id);
+
+            //Charge the user and ship the album!!!
+            return View(album);
         }
 
-        public string Details(int id)
+        // A simple music catalog
+        private static List<Album> GetAlbums()
         {
-            string message = "Store.Details, ID=" + id;
-            return message;
-        }
-
-        public ActionResult Edit()
-        {
-            ViewBag.Message = "This is a partial view";
-            return PartialView();
+            var albums = new List<Album>{
+                new Album { AlbumId = 1, Title = "The Fall of Math", Price = 8.99M},
+                new Album { AlbumId = 2, Title = "The Blue Notebooks", Price = 8.99M},
+                new Album { AlbumId = 3, Title = "Lost in Translation", Price = 9.99M },
+                new Album { AlbumId = 4, Title = "Permutation", Price = 10.99M },
+            };
+            return albums;
         }
     }
 }
